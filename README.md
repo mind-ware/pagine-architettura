@@ -1,6 +1,6 @@
 # Pagine di architettura
 
-Questo progetto pubblica, in un unico posto riservato ai colleghi di mind@ware, le pagine che spiegano l'architettura dei nostri repository. Ogni repository ha la sua pagina in `docs/architettura.html`, sul ramo `master`. La web app la legge da GitHub a ogni visita, quindi un push su `master` è visibile subito, senza ripubblicare niente.
+Questo progetto pubblica, in un unico posto riservato ai colleghi di mind@ware, le pagine che spiegano l'architettura dei nostri repository. Ogni repository ha la sua pagina in `docs/architettura.html`, sul ramo principale. La web app la legge da GitHub a ogni visita, quindi un push è visibile subito, senza ripubblicare niente.
 
 Il repository è pubblico perché le pagine, aperte in locale, caricano `stile.css` attraverso jsDelivr, che serve solo file di repository pubblici. Per questo nulla qui nomina i repository documentati o il loro contenuto. L'elenco delle pagine e il token stanno nelle proprietà del progetto Apps Script, che vede solo chi lo gestisce.
 
@@ -14,7 +14,7 @@ La web app è un progetto Google Apps Script pubblicato con queste impostazioni:
 Quando un collega apre una pagina, lo script fa cinque cose:
 
 1. cerca la pagina nella proprietà `PAGES` e la chiede a GitHub con il token della proprietà `GITHUB_TOKEN`;
-2. legge `stile.css` da questo repository, sul ramo `main`, e lo mette nella pagina al posto del collegamento allo stile;
+2. legge `stile.css` da questo repository e lo mette nella pagina al posto del collegamento allo stile;
 3. trasforma i link relativi al codice in link alla stessa posizione su GitHub, che si aprono in una nuova scheda (GitHub non si lascia mostrare dentro la web app);
 4. aggiunge in cima all'indice il link «← Pagine di architettura», che riporta all'elenco;
 5. restituisce la pagina.
@@ -25,7 +25,7 @@ I file del progetto:
 | :--- | :--- | :--- |
 | [Code.js](Code.js) | la logica appena descritta | nell'editor Apps Script, come `Codice.gs` |
 | [appsscript.json](appsscript.json) | il manifest: fuso orario, permessi, impostazioni della web app | nell'editor Apps Script (visibile attivando «Mostra il file manifest» nelle impostazioni del progetto) |
-| [stile.css](stile.css) | lo stile comune: colori, font, layout, aspetto dei diagrammi | letto dalla web app a ogni visita, dal ramo `main` |
+| [stile.css](stile.css) | lo stile comune: colori, font, layout, aspetto dei diagrammi | letto dalla web app a ogni visita |
 
 Questo repository è la copia di riferimento. Ogni modifica a `Code.js` e `appsscript.json` si fa prima qui e poi si incolla nell'editor.
 
@@ -45,6 +45,12 @@ In `PAGES`, la chiave di ogni pagina diventa il parametro `?p=` dell'indirizzo:
   "nome-pagina": { "label": "Nome mostrato nell'elenco", "repo": "mind-ware/Nome_del_repository" },
   "altra-pagina": { "label": "Altro nome", "repo": "mind-ware/Altro_repository" }
 }
+```
+
+La pagina si legge dal ramo principale del repository, qualunque sia il suo nome (`master`, `main`…). Per pubblicarla da un altro ramo si aggiunge `"branch"`:
+
+```json
+"nome-pagina": { "label": "Nome mostrato nell'elenco", "repo": "mind-ware/Nome_del_repository", "branch": "sviluppo" }
 ```
 
 ## Lo stile comune
@@ -77,7 +83,7 @@ Anche i diagrammi prendono i colori dallo stile comune: usano le classi di `stil
 
 ## Aggiungere un repository
 
-1. Scrivere `docs/architettura.html` nel repository (vedi la sezione successiva) e portarlo su `master`.
+1. Scrivere `docs/architettura.html` nel repository (vedi la sezione successiva) e portarlo sul ramo principale.
 2. Aggiungere la voce del repository alla proprietà `PAGES`.
 
 Non serve ripubblicare: lo script legge le proprietà a ogni visita. Non serve nemmeno cambiare il token, che dà accesso a tutti i repository dell'organizzazione, compresi quelli nuovi.
@@ -86,7 +92,7 @@ Non serve ripubblicare: lo script legge le proprietà a ogni visita. Non serve n
 
 | Che cosa è cambiato | Che cosa fare |
 | :--- | :--- |
-| il contenuto di una pagina | push su `master` del repository documentato |
+| il contenuto di una pagina | push sul ramo da cui la pagina si legge |
 | `stile.css` | push su `main` di questo repository: nella web app vale subito |
 | l'elenco delle pagine o il token | modificare la proprietà nell'editor |
 | `Code.js` o `appsscript.json` | push qui, poi incollare nell'editor e creare una nuova versione |

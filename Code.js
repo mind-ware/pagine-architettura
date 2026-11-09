@@ -1,18 +1,18 @@
 /**
- * Pagine di architettura dei repository, lette da GitHub a ogni visita: un push su master è subito
+ * Pagine di architettura dei repository, lette da GitHub a ogni visita: un push è subito
  * visibile, senza ripubblicare. Le vedono solo gli utenti del dominio (appsscript.json); lo script
  * gira con l'account di chi lo pubblica. Le proprietà dello script tengono il token GitHub
  * (GITHUB_TOKEN) e l'elenco delle pagine (PAGES), così il codice, che è pubblico, non nomina
  * nessun repository. Come aggiungere una pagina e pubblicare una modifica: README.md.
  */
-const BRANCH = 'master';
 const PATH = 'docs/architettura.html';
 // The pages link the shared style through jsDelivr, which also works when a page is opened locally;
 // the web app puts the style inline, read from GitHub, so a push is visible at once (jsDelivr caches it
 // for hours).
 const STYLE_LINK = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css">';
 
-// PAGES is JSON: {"chiave": {"label": "Nome nell'elenco", "repo": "mind-ware/Repository"}}.
+// PAGES is JSON: {"chiave": {"label": "Nome nell'elenco", "repo": "mind-ware/Repository"}}, with an
+// optional "branch"; without it GitHub reads the default branch of the repository.
 function pages_() {
   return JSON.parse(PropertiesService.getScriptProperties().getProperty('PAGES') || '{}');
 }
@@ -22,8 +22,8 @@ function doGet(e) {
   if (!page) return index_();
   // The link back to the index goes at the top of the sidebar, which stays on screen on wide displays.
   const back = `<a href="${ScriptApp.getService().getUrl()}" target="_top" style="margin-bottom:16px">← Pagine di architettura</a>`;
-  const style = `<style>${fetch_('mind-ware/pagine-architettura', 'stile.css', 'main')}</style>`;
-  const html = withGithubLinks_(fetch_(page.repo, PATH, BRANCH).replace(STYLE_LINK, () => style), page)
+  const style = `<style>${fetch_('mind-ware/pagine-architettura', 'stile.css')}</style>`;
+  const html = withGithubLinks_(fetch_(page.repo, PATH, page.branch).replace(STYLE_LINK, () => style), page)
     .replace('<nav class="side" aria-label="Indice">', (nav) => nav + back);
   const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || page.label;
   return HtmlService.createHtmlOutput(html)
@@ -42,7 +42,7 @@ function index_() {
 
 function fetch_(repo, path, ref) {
   const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
-  const url = `https://api.github.com/repos/${repo}/contents/${path}?ref=${ref}`;
+  const url = `https://api.github.com/repos/${repo}/contents/${path}${ref ? `?ref=${ref}` : ''}`;
   const response = UrlFetchApp.fetch(url, {
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.raw+json' },
     muteHttpExceptions: true,
@@ -56,7 +56,7 @@ function fetch_(repo, path, ref) {
 // The page links the code relatively to docs/: those links lead to the files on GitHub, in a new
 // tab, because GitHub refuses to be shown inside the frame of the web app.
 function withGithubLinks_(html, page) {
-  const base = `https://github.com/${page.repo}/blob/${BRANCH}/`;
+  const base = `https://github.com/${page.repo}/blob/${page.branch || 'HEAD'}/`;  // HEAD: the default branch
   const dir = PATH.split('/').slice(0, -1);
   return html.replace(/href="(?![a-z]+:|#)([^"]+)"/g, (_, target) => {
     const parts = [...dir];
