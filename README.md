@@ -118,7 +118,7 @@ Le prime pagine sono state scritte da un agente di programmazione (Claude Code) 
 
 ### Il punto di partenza: una pagina esistente
 
-Si copia la pagina di un repository già documentato e se ne tiene lo scheletro: indice laterale, intestazione con i numeri principali, sezioni, diagrammi, mappe «Nel codice», glossario. Lo stile comune presuppone quelle classi. Le sezioni si adattano al progetto; quelle delle pagine esistenti sono una buona base:
+Si copia la pagina di un repository già documentato e se ne tiene lo scheletro: indice laterale, intestazione, sezioni, diagrammi, mappe «Nel codice», glossario. Lo stile comune presuppone quelle classi. Le sezioni si adattano al progetto; quelle delle pagine esistenti sono una buona base:
 
 - i componenti e i loro collegamenti;
 - il percorso di una richiesta;
@@ -132,8 +132,8 @@ Si copia la pagina di un repository già documentato e se ne tiene lo scheletro:
 
 - **Lettori.** La pagina serve a capire l'architettura e a spiegarla a un collega: deve dire come funziona il sistema, non elencare tutto il codice.
 - **Registro.** È una guida discorsiva, con frasi complete, che dice ciò che serve senza alludere. Niente frasi a effetto, niente elenchi di frammenti al posto dei ragionamenti, niente parole sottintese. Il tono «da intelligenza artificiale», fatto di frasi per stupire, paratassi ed elisioni, è stato il primo difetto corretto nelle pagine esistenti. I titoli vanno in sentence case.
-- **Fatti verificati sul codice.** Ogni affermazione si controlla sul codice, sulla documentazione o sui test del repository. Gli esempi vengono da casi reali, per esempio i casi di test o di valutazione, mai inventati. I numeri dell'intestazione si misurano sui dati, con la data e la fonte scritte sotto.
-- **Mappe «Nel codice».** Ogni sezione elenca i moduli che la riguardano e i punti d'ingresso principali (funzioni, metodi, classi), con una riga su che cosa fanno. Ogni modulo compare una volta sola, nella sezione dove conta di più: lo scopo è spiegare, non essere completi. I link sono relativi a `docs/`, per esempio `../src/main.py`, e nella web app diventano link a GitHub.
+- **Fatti verificati sul codice e validità temporale.** Ogni affermazione si controlla sul codice, sulla documentazione o sui test del repository. Gli esempi vengono da casi reali, per esempio i casi di test o di valutazione, mai inventati. Non si inseriscono nell'intestazione blocchi di conteggi o cifre effimere che dipendono da uno specifico ingest di dati e non sono universalmente veri. Sia all'inizio della pagina (nell'intestazione, con una riga `.facts-note`) sia alla fine (nel footer) va esplicitata chiaramente la data o la sessione di test fino a cui i dati, le metriche e gli esempi riportati sono validi.
+- **Mappe «Nel codice» sempre a destra.** Ogni sezione elenca i moduli che la riguardano e i punti d'ingresso principali (funzioni, metodi, classi), con una riga su che cosa fanno. Ogni modulo compare una volta sola, nella sezione dove conta di più: lo scopo è spiegare, non essere completi. I link sono relativi a `docs/`, per esempio `../src/main.py`, e nella web app diventano link a GitHub. I riferimenti al codice vanno sempre posizionati sulla spalla destra nella colonna dedicata (`.code-map`), mai come frammenti in linea a sinistra (`.where`) sotto i singoli passaggi o paragrafi: anche nelle sezioni a tappe (come il percorso di una richiesta), la colonna di sinistra resta dedicata alla sequenza logica e agli esempi, mentre la colonna di destra elenca i file e le funzioni delle rispettive fasi.
 - **Layout largo.** Testo a sinistra e mappa del codice a destra; diagrammi a tutta larghezza. Una colonna centrale stretta spreca lo spazio e costringe i diagrammi in forme poco chiare.
 
 ### I diagrammi con diagram-design
@@ -189,9 +189,10 @@ Regole:
 - registro da guida discorsiva, frasi complete, dice ciò che serve senza alludere;
   niente frasi a effetto, paratassi o elisioni; titoli in sentence case;
 - ogni affermazione verificata sul codice; esempi solo da casi reali del repository;
-  i numeri misurati sui dati, con data e fonte;
-- per ogni sezione una mappa «Nel codice» con moduli e punti d'ingresso, ogni modulo
-  una volta sola, link relativi a docs/;
+  nessun blocco di conteggi effimeri nell'intestazione; dichiarare sempre fin dall'inizio
+  (con una riga .facts-note nell'header) e nel footer la data del test fino a cui i dati sono validi;
+- per ogni sezione una mappa «Nel codice» con moduli e punti d'ingresso sulla spalla destra,
+  ogni modulo una volta sola, link relativi a docs/; nessun riferimento al codice in linea a sinistra;
 - diagrammi con i principi di diagram-design, come SVG in linea con le classi di
   stile.css e nessun colore scritto nell'SVG; legenda con il significato delle
   frecce e didascalia per ciascuno.
