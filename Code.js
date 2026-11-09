@@ -7,6 +7,10 @@
  */
 const BRANCH = 'master';
 const PATH = 'docs/architettura.html';
+// The pages link the shared style through jsDelivr, which also works when a page is opened locally;
+// the web app puts the style inline, read from GitHub, so a push is visible at once (jsDelivr caches it
+// for hours).
+const STYLE_LINK = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css">';
 
 // PAGES is JSON: {"chiave": {"label": "Nome nell'elenco", "repo": "mind-ware/Repository"}}.
 function pages_() {
@@ -18,7 +22,8 @@ function doGet(e) {
   if (!page) return index_();
   // The link back to the index goes at the top of the sidebar, which stays on screen on wide displays.
   const back = `<a href="${ScriptApp.getService().getUrl()}" target="_top" style="margin-bottom:16px">← Pagine di architettura</a>`;
-  const html = withGithubLinks_(fetchPage_(page), page)
+  const style = `<style>${fetch_('mind-ware/pagine-architettura', 'stile.css', 'main')}</style>`;
+  const html = withGithubLinks_(fetch_(page.repo, PATH, BRANCH).replace(STYLE_LINK, () => style), page)
     .replace('<nav class="side" aria-label="Indice">', (nav) => nav + back);
   const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || page.label;
   return HtmlService.createHtmlOutput(html)
@@ -35,15 +40,15 @@ function index_() {
     .setTitle('Pagine di architettura');
 }
 
-function fetchPage_(page) {
+function fetch_(repo, path, ref) {
   const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
-  const url = `https://api.github.com/repos/${page.repo}/contents/${PATH}?ref=${BRANCH}`;
+  const url = `https://api.github.com/repos/${repo}/contents/${path}?ref=${ref}`;
   const response = UrlFetchApp.fetch(url, {
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.raw+json' },
     muteHttpExceptions: true,
   });
   if (response.getResponseCode() !== 200) {
-    throw new Error(`GitHub risponde ${response.getResponseCode()} per ${page.repo}/${PATH}`);
+    throw new Error(`GitHub risponde ${response.getResponseCode()} per ${repo}/${path}`);
   }
   return response.getContentText('UTF-8');
 }

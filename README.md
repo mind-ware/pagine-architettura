@@ -2,7 +2,7 @@
 
 Questo progetto pubblica, in un unico posto riservato ai colleghi di mind@ware, le pagine che spiegano l'architettura dei nostri repository. Ogni repository ha la sua pagina in `docs/architettura.html`, sul ramo `master`. La web app la legge da GitHub a ogni visita, quindi un push su `master` è visibile subito, senza ripubblicare niente.
 
-Il repository è pubblico perché le pagine devono poter caricare `stile.css` da GitHub Pages. Per questo nulla qui nomina i repository documentati o il loro contenuto. L'elenco delle pagine e il token stanno nelle proprietà del progetto Apps Script, che vede solo chi lo gestisce.
+Il repository è pubblico perché le pagine, aperte in locale, caricano `stile.css` attraverso jsDelivr, che serve solo file di repository pubblici. Per questo nulla qui nomina i repository documentati o il loro contenuto. L'elenco delle pagine e il token stanno nelle proprietà del progetto Apps Script, che vede solo chi lo gestisce.
 
 ## Come funziona
 
@@ -11,12 +11,13 @@ La web app è un progetto Google Apps Script pubblicato con queste impostazioni:
 - gira con l'account di chi lo pubblica;
 - è visibile solo agli utenti del dominio `mind-ware.it`.
 
-Quando un collega apre una pagina, lo script fa quattro cose:
+Quando un collega apre una pagina, lo script fa cinque cose:
 
 1. cerca la pagina nella proprietà `PAGES` e la chiede a GitHub con il token della proprietà `GITHUB_TOKEN`;
-2. trasforma i link relativi al codice in link alla stessa posizione su GitHub, che si aprono in una nuova scheda (GitHub non si lascia mostrare dentro la web app);
-3. aggiunge in cima all'indice il link «← Pagine di architettura», che riporta all'elenco;
-4. restituisce la pagina.
+2. legge `stile.css` da questo repository, sul ramo `main`, e lo mette nella pagina al posto del collegamento allo stile;
+3. trasforma i link relativi al codice in link alla stessa posizione su GitHub, che si aprono in una nuova scheda (GitHub non si lascia mostrare dentro la web app);
+4. aggiunge in cima all'indice il link «← Pagine di architettura», che riporta all'elenco;
+5. restituisce la pagina.
 
 I file del progetto:
 
@@ -24,7 +25,7 @@ I file del progetto:
 | :--- | :--- | :--- |
 | [Code.js](Code.js) | la logica appena descritta | nell'editor Apps Script, come `Codice.gs` |
 | [appsscript.json](appsscript.json) | il manifest: fuso orario, permessi, impostazioni della web app | nell'editor Apps Script (visibile attivando «Mostra il file manifest» nelle impostazioni del progetto) |
-| [stile.css](stile.css) | lo stile comune: colori, font, layout, aspetto dei diagrammi | su GitHub Pages, a ogni push su `main` |
+| [stile.css](stile.css) | lo stile comune: colori, font, layout, aspetto dei diagrammi | letto dalla web app a ogni visita, dal ramo `main` |
 
 Questo repository è la copia di riferimento. Ogni modifica a `Code.js` e `appsscript.json` si fa prima qui e poi si incolla nell'editor.
 
@@ -64,13 +65,13 @@ I font sono:
 
 Il tema scuro segue l'impostazione del sistema.
 
-Le pagine non contengono stile proprio. Nel `<head>` hanno solo questa riga:
+Le pagine non contengono stile proprio. Nel `<head>` hanno solo questa riga, che deve restare identica perché lo script la cerca così:
 
 ```html
-<link rel="stylesheet" href="https://mind-ware.github.io/pagine-architettura/stile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css">
 ```
 
-La stessa riga funziona sia nella web app sia aprendo il file in locale nel browser: per vedere una pagina mentre la si scrive basta aprirla e ricaricare dopo ogni modifica.
+Nella web app lo script sostituisce la riga con lo stile letto da GitHub. Aperta in locale, la pagina carica lo stile da jsDelivr: per vedere una pagina mentre la si scrive basta aprirla nel browser e ricaricare dopo ogni modifica. jsDelivr tiene in cache il file per alcune ore; dopo una modifica allo stile, per vederla subito in locale si apre una volta `https://purge.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css` e si ricarica la pagina senza cache.
 
 Anche i diagrammi prendono i colori dallo stile comune: usano le classi di `stile.css`, mai colori scritti nell'SVG. Per questo un cambio di colori o di font in `stile.css` vale per tutte le pagine e per tutti i loro diagrammi, in chiaro e in scuro.
 
@@ -86,7 +87,7 @@ Non serve ripubblicare: lo script legge le proprietà a ogni visita. Non serve n
 | Che cosa è cambiato | Che cosa fare |
 | :--- | :--- |
 | il contenuto di una pagina | push su `master` del repository documentato |
-| `stile.css` | push su `main` di questo repository; GitHub Pages lo pubblica in qualche minuto |
+| `stile.css` | push su `main` di questo repository: nella web app vale subito |
 | l'elenco delle pagine o il token | modificare la proprietà nell'editor |
 | `Code.js` o `appsscript.json` | push qui, poi incollare nell'editor e creare una nuova versione |
 
@@ -171,7 +172,7 @@ Il modello più rapido è un diagramma delle pagine esistenti: si copia e se ne 
 ```text
 Scrivi docs/architettura.html per questo repository, partendo dalla pagina
 <percorso di una pagina esistente>: tieni lo scheletro, le classi e la riga
-<link rel="stylesheet" href="https://mind-ware.github.io/pagine-architettura/stile.css">,
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css">,
 e sostituisci il contenuto.
 
 Lettori: colleghi che devono capire l'architettura e saperla spiegare.

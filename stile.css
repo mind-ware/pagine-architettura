@@ -1,5 +1,5 @@
-/* Shared style of the architecture pages, served by GitHub Pages at https://mind-ware.github.io/pagine-architettura/stile.css:
-   every page links it, both opened locally and in the web app (README.md). */
+/* Shared style of the architecture pages. The pages link it through jsDelivr
+   (https://cdn.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css); the web app puts it inline, read from GitHub (README.md). */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 /* Colours of mind@ware (mind-ware.it: orange #E84E1B, text #303030, blue #0282a9).
