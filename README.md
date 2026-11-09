@@ -26,6 +26,7 @@ I file del progetto:
 | [Code.js](Code.js) | la logica appena descritta | nell'editor Apps Script, come `Codice.gs` |
 | [appsscript.json](appsscript.json) | il manifest: fuso orario, permessi, impostazioni della web app | nell'editor Apps Script (visibile attivando «Mostra il file manifest» nelle impostazioni del progetto) |
 | [stile.css](stile.css) | lo stile comune: colori, font, layout, aspetto dei diagrammi | letto dalla web app a ogni visita |
+| [template.html](template.html) | il template di partenza: struttura HTML, layout a due colonne e un diagramma di esempio | da copiare come base per nuovi `docs/architettura.html` |
 
 Questo repository è la copia di riferimento. Ogni modifica a `Code.js` e `appsscript.json` si fa prima qui e poi si incolla nell'editor.
 
@@ -116,9 +117,9 @@ Un 401 vuol dire invece token scaduto o sbagliato.
 
 Le prime pagine sono state scritte da un agente di programmazione (Claude Code) e riviste a più riprese. Questa sezione raccoglie ciò che ha funzionato, in modo da ottenere una pagina nuova con lo stesso livello al primo giro.
 
-### Il punto di partenza: una pagina esistente
+### Il punto di partenza: template o pagina esistente
 
-Si copia la pagina di un repository già documentato e se ne tiene lo scheletro: indice laterale, intestazione, sezioni, diagrammi, mappe «Nel codice», glossario. Lo stile comune presuppone quelle classi. Le sezioni si adattano al progetto; quelle delle pagine esistenti sono una buona base:
+Il modo più rapido è partire da [template.html](template.html), che fornisce già la struttura pulita, la navigazione laterale, un diagramma d'esempio e il layout a due colonne. In alternativa si può copiare la pagina di un repository già documentato e tenerne lo scheletro. Le sezioni si adattano al progetto; quelle delle pagine esistenti sono una buona base:
 
 - i componenti e i loro collegamenti;
 - il percorso di una richiesta;

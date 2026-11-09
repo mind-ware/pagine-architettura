@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Template di pagina di architettura: si apre nel browser, senza server.
+     Testi e diagrammi si modificano qui; lo stile comune viene letto da pagine-architettura.
+     Convenzioni:
+       - Layout largo (.cols): testo narrativo ed esempi a sinistra, mappa «Nel codice» (.code-map) sempre a destra.
+       - Titoli e intestazioni in sentence case (solo la prima lettera maiuscola, no Title Case).
+       - Validità temporale: indicare la data o la sessione di test nell'header (.facts-note) e nel footer.
+       - Niente blocchi di numeri/conteggi effimeri nell'intestazione se non universali.
+       - Diagrammi: SVG in linea (viewBox 1600 px) con classi di stile.css (.box, .focal, .store, .ext, .input, .e, .lb). -->
+<title>Architettura di Nome Progetto</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mind-ware/pagine-architettura@main/stile.css">
+</head>
+<body>
+
+<div class="shell">
+<nav class="side" aria-label="Indice">
+  <p class="eyebrow">Indice</p>
+  <ul>
+    <li><a href="#componenti">Componenti e collegamenti</a></li>
+    <li><a href="#richiesta">Percorso di una richiesta</a></li>
+    <li><a href="#glossario">Glossario</a></li>
+  </ul>
+</nav>
+
+<main class="page">
+
+  <header>
+    <p class="eyebrow">Organizzazione · Progetto</p>
+    <h1>Architettura di Nome Progetto</h1>
+    <p class="lede">Descrizione iniziale in una o due frasi: spiega a chi serve il sistema, che cosa fa e qual è il suo scopo principale, usando un linguaggio chiaro e discorsivo.</p>
+    <p>Il secondo paragrafo illustra i principi architetturali guida del sistema, la separazione dei compiti e le scelte tecniche cardine.</p>
+    <p class="facts-note">I dati e gli esempi riportati in questa guida sono validi fino al test del 9 novembre 2026.</p>
+  </header>
+
+  <!-- ============================== COMPONENTI ============================== -->
+  <section id="componenti">
+    <div class="head">
+      <p class="eyebrow">Componenti</p>
+      <h2>I componenti e i loro collegamenti</h2>
+    </div>
+    <p>Panoramica dell'architettura e del runtime (container Docker, servizi esposti, reverse proxy, database e servizi esterni).</p>
+
+    <figure>
+      <div class="plate">
+        <svg class="dg" viewBox="0 0 1600 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="d1-title d1-desc">
+          <title id="d1-title">Componenti principali e collegamenti</title>
+          <desc id="d1-desc">L'utente si collega al gateway, che inoltra al backend; il backend comunica con il database e con servizi esterni.</desc>
+          <defs>
+            <marker id="d1-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><polygon class="mk" points="0 0, 8 3, 0 6"/></marker>
+            <marker id="d1-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><polygon class="mk link" points="0 0, 8 3, 0 6"/></marker>
+          </defs>
+          <rect class="bg" width="1600" height="480"/>
+
+          <!-- Connessioni -->
+          <path class="e" d="M240 224L360 224" marker-end="url(#d1-arrow)"/>
+          <path class="e" d="M600 224L720 224" marker-end="url(#d1-arrow)"/>
+          <path class="e" d="M960 224L1080 224" marker-end="url(#d1-arrow)"/>
+          <path class="e link" d="M840 188L840 116" marker-end="url(#d1-link)"/>
+
+          <!-- Etichette delle frecce -->
+          <rect class="mask" x="272" y="205" width="56" height="15" rx="2"/><text class="lb mid" x="300" y="216">HTTPS</text>
+          <rect class="mask" x="627" y="205" width="66" height="15" rx="2"/><text class="lb mid" x="660" y="216">INOLTRO</text>
+          <rect class="mask" x="987" y="205" width="66" height="15" rx="2"/><text class="lb mid" x="1020" y="216">SQL / ORM</text>
+          <rect class="mask" x="845" y="145" width="66" height="15" rx="2"/><text class="lb start" x="850" y="156">CHIAMATE</text>
+
+          <!-- Nodi: Servizio esterno (.ext in alto) -->
+          <g>
+            <rect class="mask" x="720" y="44" width="240" height="72" rx="6"/>
+            <rect class="box ext" x="720" y="44" width="240" height="72" rx="6"/>
+            <rect class="tag" x="730" y="52" width="34" height="14" rx="2"/><text class="tagt" x="747" y="62">EXT</text>
+            <text class="name" x="840" y="81">Servizio esterno</text>
+            <text class="sub" x="840" y="97">API esterne · cloud</text>
+          </g>
+
+          <!-- Nodi: Utente (.input a sinistra) -->
+          <g>
+            <rect class="mask" x="40" y="188" width="200" height="72" rx="6"/>
+            <rect class="box input" x="40" y="188" width="200" height="72" rx="6"/>
+            <rect class="tag" x="50" y="196" width="34" height="14" rx="2"/><text class="tagt" x="67" y="206">WEB</text>
+            <text class="name" x="140" y="225">Utente</text>
+            <text class="sub" x="140" y="241">browser o client</text>
+          </g>
+
+          <!-- Nodi: Reverse proxy / Gateway (normale) -->
+          <g>
+            <rect class="mask" x="360" y="188" width="240" height="72" rx="6"/>
+            <rect class="box" x="360" y="188" width="240" height="72" rx="6"/>
+            <rect class="tag" x="370" y="196" width="34" height="14" rx="2"/><text class="tagt" x="387" y="206">EDGE</text>
+            <text class="name" x="480" y="225">Caddy / Gateway</text>
+            <text class="sub" x="480" y="241">punto d'ingresso · :443</text>
+          </g>
+
+          <!-- Nodi: Backend principale (.focal arancione) -->
+          <g>
+            <rect class="mask" x="720" y="188" width="240" height="72" rx="6"/>
+            <rect class="box focal" x="720" y="188" width="240" height="72" rx="6"/>
+            <rect class="tag" x="730" y="196" width="34" height="14" rx="2"/><text class="tagt" x="747" y="206">API</text>
+            <text class="name" x="840" y="225">Backend</text>
+            <text class="sub" x="840" y="241">FastAPI · pipeline</text>
+          </g>
+
+          <!-- Nodi: Database / Store (.store grigio scuro) -->
+          <g>
+            <rect class="mask" x="1080" y="188" width="220" height="72" rx="6"/>
+            <rect class="box store" x="1080" y="188" width="220" height="72" rx="6"/>
+            <rect class="tag" x="1090" y="196" width="34" height="14" rx="2"/><text class="tagt" x="1107" y="206">DB</text>
+            <text class="name" x="1190" y="225">Database</text>
+            <text class="sub" x="1190" y="241">SQLite / PostgreSQL</text>
+          </g>
+
+          <!-- Legenda in calce al diagramma -->
+          <line class="sep" x1="40" y1="416" x2="1560" y2="416"/>
+          <text class="eb" x="40" y="448">LEGENDA</text>
+          <rect class="box focal" x="136" y="437" width="28" height="14" rx="3"/>
+          <text class="lg" x="176" y="448">Logica principale</text>
+          <rect class="box store" x="330" y="437" width="28" height="14" rx="3"/>
+          <text class="lg" x="370" y="448">Archivio dati</text>
+          <rect class="box ext" x="495" y="437" width="28" height="14" rx="3"/>
+          <text class="lg" x="535" y="448">Servizio esterno</text>
+          <rect class="box input" x="675" y="437" width="28" height="14" rx="3"/>
+          <text class="lg" x="715" y="448">Ingresso utente</text>
+          <text class="lg" x="1560" y="448" text-anchor="end">La freccia va da chi avvia la richiesta a chi la riceve.</text>
+        </svg>
+      </div>
+      <figcaption>Descrizione concisa che sintetizza il ruolo dei blocchi evidenziati e i confini architetturali.</figcaption>
+    </figure>
+
+    <!-- Layout a due colonne: testo ed eventuale tabella a sinistra, mappa «Nel codice» a destra -->
+    <div class="cols">
+      <div class="text">
+        <p>Una breve spiegazione che illustra le responsabilità di ciascun componente.</p>
+        <div class="tbl">
+          <table>
+            <thead>
+              <tr><th>Componente</th><th>Tecnologia</th><th>Ruolo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Gateway</td><td>Caddy 2</td><td>Terminazione TLS e smistamento delle richieste.</td></tr>
+              <tr><td>Backend</td><td>FastAPI, Python 3.12+</td><td>Esecuzione della logica di business e orchestrazione.</td></tr>
+              <tr><td>Database</td><td>SQLite (WAL mode)</td><td>Persistenza delle sessioni e degli indici.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="code-map">
+        <p class="code-map-title">Nel codice</p>
+        <ul>
+          <li><span class="loc"><a href="../docker-compose.yml">docker-compose.yml</a></span><span class="what">Definizione dei container, delle porte e dei volumi persistenti.</span></li>
+          <li><span class="loc"><a href="../backend/app.py">backend/app.py</a><code>app</code><code>lifespan</code></span><span class="what">Punto d'ingresso dell'API e gestione del ciclo di vita.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== PERCORSO OPERATIVO ============================== -->
+  <section id="richiesta">
+    <div class="head">
+      <p class="eyebrow">Flusso operativo</p>
+      <h2>Il percorso di una richiesta</h2>
+    </div>
+    <p>Descrizione sintetica del percorso eseguito dal sistema per rispondere a una richiesta o a un evento.</p>
+
+    <!-- Anche nei flussi a tappe, la spiegazione logica è a sinistra (.text) e la mappa del codice è a destra (.code-map) -->
+    <div class="cols">
+      <div class="text">
+        <ol class="phases">
+          <li>
+            <span class="n" aria-hidden="true">1</span>
+            <h3>Ricezione e validazione</h3>
+            <p>La richiesta viene ricevuta, autenticata e validata secondo lo schema atteso.</p>
+            <p class="example"><b>Nell'esempio</b> il token di sessione viene verificato nei cookie o nell'header Authorization.</p>
+          </li>
+          <li class="key">
+            <span class="n" aria-hidden="true">2</span>
+            <h3>Elaborazione principale</h3>
+            <p>La fase focale esegue l'algoritmo di dominio, coordina le interrogazioni ai dati o le chiamate ai modelli.</p>
+            <p class="example"><b>Nell'esempio</b> il planner estrae i vincoli ed esegue la ricerca mirata.</p>
+          </li>
+          <li>
+            <span class="n" aria-hidden="true">3</span>
+            <h3>Composizione della risposta</h3>
+            <p>I risultati vengono verificati, formattati in streaming o completati con i metadati di tracciamento.</p>
+            <p class="example"><b>Nell'esempio</b> la risposta viene inviata come stream progressivo al client.</p>
+          </li>
+        </ol>
+        <p>Al termine del ciclo, l'evento e la sua traccia vengono archiviati per diagnostica e audit.</p>
+      </div>
+
+      <div class="code-map">
+        <p class="code-map-title">Nel codice</p>
+        <ul>
+          <li><span class="loc"><a href="../backend/router.py">backend/router.py</a><code>endpoint_handler</code></span><span class="what">Fase 1: validazione delle credenziali e deserializzazione della richiesta.</span></li>
+          <li><span class="loc"><a href="../backend/service.py">backend/service.py</a><code>execute_pipeline</code></span><span class="what">Fase 2: esecuzione della logica principale e coordinamento dei dati.</span></li>
+          <li><span class="loc"><a href="../backend/stream.py">backend/stream.py</a><code>format_stream</code></span><span class="what">Fase 3: emissione della risposta progressiva e salvataggio della traccia.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== GLOSSARIO ============================== -->
+  <section id="glossario">
+    <div class="head">
+      <p class="eyebrow">Definizioni</p>
+      <h2>Glossario</h2>
+    </div>
+    <dl class="terms wide">
+      <dt>Termine chiave</dt>
+      <dd>Definizione concisa del concetto di dominio e del suo ruolo nell'architettura.</dd>
+      <dt>Altro termine</dt>
+      <dd>Spiegazione di un componente o acronimo utilizzato nel documento.</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <p>Questa guida si basa sul codice al commit XXXXXXX del 9 novembre 2026.</p>
+  </footer>
+
+</main>
+</div>
+</body>
+</html>
